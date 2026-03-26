@@ -1,5 +1,7 @@
 
-# Healthcare Content Generator
+# DAI- 42 Healthcare Content Generator
+
+# <h2>Division</h2>
 
 A **GenAI-powered content generation tool** for healthcare professionals. It turns basic topics into high-quality, professional outputs—such as **Patient Summaries**, clinical notes, and patient education handouts—using **Prompt Engineering**, a **Vector DB** for terminology/guidelines, and an **LLM API**.
 
