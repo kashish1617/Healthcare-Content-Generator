@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Healthcare Content Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 16px;
+            /* Neutral gradient for login screen */
+            background: radial-gradient(circle at top left, #e0f2fe, transparent 55%),
+                radial-gradient(circle at top right, #ecfeff, transparent 55%),
+                linear-gradient(to bottom right, #f9fafb, #e5f6ff);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(18px);
+        }
+
+        .soft-card {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .soft-border {
+            border-color: rgba(15, 23, 42, 0.06);
+        }
+
+        /* Background image only for the main app shell (after login) */
+        #appShell {
+            background-image: url("https://images.unsplash.com/photo-1535916707207-35f97e715e1b?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+
+<body class="text-slate-900 min-h-screen">
+
+    <!-- Simple login screen -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
+        <div class="glass-panel max-w-md w-full rounded-3xl border soft-border shadow-xl p-6 space-y-4">
+            <div class="flex justify-center gap-2 text-xs mb-1">
+                <button id="loginTab"
+                    class="px-3 py-1.5 rounded-full bg-emerald-500 text-emerald-950 font-semibold shadow-sm">
+                    Login
+                </button>
+                <button id="signupTab"
+                    class="px-3 py-1.5 rounded-full bg-white/60 text-slate-700 border border-slate-200">
+                    Sign up
+                </button>
+            </div>
+            <h1 class="text-2xl font-semibold text-slate-900 text-center">Clinician access</h1>
+            <p class="text-sm text-slate-500 text-center">
+                Log in or create a simple account to generate patient documentation.
+            </p>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1" for="clinicianName">Full name</label>
+                    <input id="clinicianName" type="text"
+                        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                        placeholder="e.g. Dr Smith">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1" for="clinicianEmail">Email</label>
+                    <input id="clinicianEmail" type="email"
+                        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                        placeholder="you@hospital.org">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-500 mb-1" for="clinicianPassword">Password</label>
+                    <input id="clinicianPassword" type="password"
+                        class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                        placeholder="••••••••">
+                </div>
+            </div>
+            <button id="loginBtn"
+                class="mt-2 w-full inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-300/80 hover:bg-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 transition">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- Page wrapper -->
+    <div id="appShell" class="max-w-6xl mx-auto px-4 py-8 hidden">
+        <!-- Nav -->
+        <header class="flex items-center justify-between mb-8 glass-panel rounded-2xl px-4 py-3 shadow-sm soft-border border">
+            <div class="flex items-center gap-2">
+                <span
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 text-xl">🏥</span>
+                <div>
+                    <h1 class="text-lg font-semibold tracking-tight text-slate-900">Healthcare Content Generator</h1>
+                    <p class="text-xs text-slate-500">GenAI • Vector DB • Clinical-grade prompts</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 text-xs">
+                <span
+                    class="rounded-full bg-emerald-500/10 px-3 py-1 font-medium text-emerald-700 border border-emerald-400/60 hidden md:inline-block"
+                    id="userBadge">
+                </span>
+                <button id="logoutBtn"
+                    class="px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700 hover:border-emerald-400 hover:text-emerald-700 transition">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Hero -->
+        <section class="mb-8">
+            <div
+                class="rounded-3xl glass-panel border soft-border px-6 py-6 md:px-8 md:py-7 shadow-xl shadow-emerald-100/70">
+                <div class="md:flex md:items-center md:justify-between gap-6">
+                    <div class="space-y-2 md:max-w-xl">
+                        <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
+                            Turn brief cases into structured clinical documentation.
+                        </h2>
+                        <p class="text-sm md:text-base text-slate-600">
+                            Generate clear, structured clinical summaries from a few lines of input.
+                        </p>
+                        <div class="flex flex-wrap gap-2 text-xs text-slate-700 mt-3">
+                            <span
+                                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 border border-emerald-200">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span> RAG with ChromaDB
+                            </span>
+                            <span
+                                class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 border border-indigo-200">
+                                Structured prompts for CC / HPI / A&P
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4 md:mt-0 md:text-right text-xs text-slate-600">
+                        <p class="font-medium">Designed for:</p>
+                        <p>Residents • Hospitalists • Outpatient clinicians</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content: left form, right output -->
+        <main class="grid gap-6 md:grid-cols-2 items-start">
+            <!-- Left: Case details form -->
+            <section class="soft-card border soft-border rounded-2xl p-5 md:p-6 shadow-lg shadow-slate-200/70">
+                <h3 class="text-sm font-semibold text-slate-900 mb-1">Case details</h3>
+                <p class="text-xs text-slate-500 mb-4">
+                    Fill in the visit details for this patient encounter.
+                </p>
+
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="visitDate">Date of visit</label>
+                        <input id="visitDate" type="date"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="patientNameCase">Patient name</label>
+                        <input id="patientNameCase" type="text"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                            placeholder="e.g. Mr B, 62 years">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="patientAge">Age</label>
+                        <input id="patientAge" type="number" min="0" max="120"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                            placeholder="e.g. 58">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="providerName">Provider (optional)</label>
+                        <input id="providerName" type="text"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                            placeholder="e.g. Dr Smith">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mb-3">
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="vitalsBp">Blood pressure</label>
+                        <input id="vitalsBp" type="text"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                            placeholder="130/80 mmHg">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="vitalsHr">Heart rate</label>
+                        <input id="vitalsHr" type="text"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                            placeholder="86 bpm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 mb-1" for="vitalsTemp">Body temperature</label>
+                        <input id="vitalsTemp" type="text"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none"
+                            placeholder="98.6 °F">
+                    </div>
+                </div>
+
+                <label class="block text-xs text-slate-500 mb-1.5" for="topic">
+                    Disease / chief complaint & history
+                </label>
+                <textarea id="topic"
+                    class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 outline-none resize-none h-32 mb-3"
+                    placeholder="e.g. 3-day history of worsening shortness of breath on exertion, background of HTN and DM."></textarea>
+
+                <!-- Advanced settings -->
+                <details class="mb-4 text-xs text-slate-600">
+                    <summary class="cursor-pointer select-none text-slate-500 hover:text-emerald-600 mb-1.5">
+                        Advanced settings
+                    </summary>
+                    <div class="mt-2 grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="temperature" class="block text-[11px] text-slate-500 mb-1">Temperature</label>
+                            <input id="temperature" type="range" min="0" max="1" step="0.05" value="0.3"
+                                class="w-full accent-emerald-400">
+                            <div class="flex justify-between text-[11px] text-slate-400 mt-0.5">
+                                <span>Deterministic</span><span id="temperatureValue">0.30</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="maxTokens" class="block text-[11px] text-slate-500 mb-1">Max tokens</label>
+                            <input id="maxTokens" type="number" min="256" max="4096" step="256" value="2048"
+                                class="w-full rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px]">
+                            <p class="text-[10px] text-slate-400 mt-0.5">Higher = longer outputs.</p>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button id="generateBtn"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-emerald-950 shadow-lg shadow-emerald-300/80 hover:bg-emerald-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 transition w-full">
+                        <span id="generateLabel">Generate document</span>
+                        <span id="generateSpinner"
+                            class="hidden h-4 w-4 border-2 border-emerald-900 border-t-transparent rounded-full animate-spin"></span>
+                    </button>
+                </div>
+
+                <p class="mt-3 text-[11px] text-slate-500">
+                    Data is not persisted; please avoid real patient identifiers in this demo.
+                </p>
+            </section>
+
+            <!-- Right: Output card -->
+            <section
+                class="soft-card border soft-border rounded-2xl p-5 md:p-6 shadow-lg shadow-slate-200/70 min-h-[260px] flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-900">Generated document</h3>
+                        <p class="text-[11px] text-slate-500" id="outputSubtitle">
+                            Your structured content will appear here.
+                        </p>
+                    </div>
+                    <button id="copyBtn"
+                        class="hidden text-[11px] px-3 py-1.5 rounded-full border border-slate-200 text-slate-700 hover:border-emerald-400 hover:text-emerald-700 transition">
+                        Copy text
+                    </button>
+                </div>
+
+                <div id="outputBox"
+                    class="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm md:text-base text-slate-900 overflow-auto whitespace-pre-wrap leading-relaxed">
+                    <p class="text-slate-500 text-xs">
+                        Example: “58-year-old male, chest pain x 2 hours, history of HTN and DM…” → Patient Summary with
+                        CC, HPI, PMH, meds, allergies, vitals, key findings, assessment, and plan.
+                    </p>
+                </div>
+
+                <button id="downloadBtn"
+                    class="hidden mt-3 text-[11px] inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-slate-700 hover:border-emerald-400 hover:text-emerald-700 transition self-start">
+                    Download as .txt
+                </button>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-10 text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 glass-panel rounded-2xl px-4 py-3 border soft-border shadow-sm">
+            <span>Powered by your FastAPI backend (`/generate`) and an OpenAI-compatible LLM (e.g. OpenRouter).</span>
+            <span>Ensure <code class="bg-slate-100 px-1.5 py-0.5 rounded">OPENAI_API_KEY</code> and <code
+                    class="bg-slate-100 px-1.5 py-0.5 rounded">OPENAI_API_BASE</code> are set on the server.</span>
+        </footer>
+    </div>
+
+    <!-- Interaction logic -->
+    <script>
+        const typePills = document.querySelectorAll(".type-pill");
+        let selectedType = "patient_summary";
+
+        typePills.forEach(btn => {
+            btn.addEventListener("click", () => {
+                selectedType = btn.dataset.type;
+                typePills.forEach(b => b.classList.remove("border-emerald-400/60", "bg-emerald-500/30", "text-emerald-50", "shadow-sm"));
+                typePills.forEach(b => b.classList.add("border-slate-600", "bg-slate-800/70", "text-slate-200"));
+                btn.classList.remove("border-slate-600", "bg-slate-800/70", "text-slate-200");
+                btn.classList.add("border-emerald-400/60", "bg-emerald-500/30", "text-emerald-50", "shadow-sm");
+                document.getElementById("outputSubtitle").textContent =
+                    selectedType === "patient_summary" ? "Patient Summary with CC, HPI, PMH, A&P…" :
+                        selectedType === "clinical_note" ? "SOAP/progress-style clinical note…" :
+                            "Patient-friendly education handout.";
+            });
+        });
+
+        const temperatureInput = document.getElementById("temperature");
+        const temperatureValue = document.getElementById("temperatureValue");
+        temperatureInput.addEventListener("input", () => {
+            temperatureValue.textContent = Number(temperatureInput.value).toFixed(2);
+        });
+
+        const topicEl = document.getElementById("topic");
+        const generateBtn = document.getElementById("generateBtn");
+        const generateLabel = document.getElementById("generateLabel");
+        const generateSpinner = document.getElementById("generateSpinner");
+        const outputBox = document.getElementById("outputBox");
+        const copyBtn = document.getElementById("copyBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        // Login elements
+        const loginScreen = document.getElementById("loginScreen");
+        const appShell = document.getElementById("appShell");
+        const loginBtn = document.getElementById("loginBtn");
+        const loginTab = document.getElementById("loginTab");
+        const signupTab = document.getElementById("signupTab");
+        const clinicianNameEl = document.getElementById("clinicianName");
+        const clinicianEmailEl = document.getElementById("clinicianEmail");
+        const clinicianPasswordEl = document.getElementById("clinicianPassword");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const userBadge = document.getElementById("userBadge");
+
+        // Vitals on main form
+        const vitalsBpEl = document.getElementById("vitalsBp");
+        const vitalsHrEl = document.getElementById("vitalsHr");
+        const vitalsTempEl = document.getElementById("vitalsTemp");
+        const visitDateEl = document.getElementById("visitDate");
+        const patientNameCaseEl = document.getElementById("patientNameCase");
+        const patientAgeEl = document.getElementById("patientAge");
+        const providerNameEl = document.getElementById("providerName");
+
+        let currentUser = null;
+        let authMode = "login";
+
+        function loadUserFromStorage() {
+            const raw = sessionStorage.getItem("hcg_user");
+            if (!raw) return null;
+            try {
+                return JSON.parse(raw);
+            } catch {
+                return null;
+            }
+        }
+
+        function showAppShell() {
+            loginScreen.classList.add("hidden");
+            appShell.classList.remove("hidden");
+            if (currentUser && currentUser.name) {
+                userBadge.textContent = `${currentUser.name}`;
+                userBadge.classList.remove("hidden");
+            } else {
+                userBadge.classList.add("hidden");
+            }
+        }
+
+        function setAuthMode(mode) {
+            authMode = mode;
+            if (mode === "login") {
+                loginTab.classList.add("bg-emerald-500", "text-emerald-950", "font-semibold", "shadow-sm");
+                loginTab.classList.remove("bg-white/60", "text-slate-700", "border", "border-slate-200");
+                signupTab.classList.remove("bg-emerald-500", "text-emerald-950", "font-semibold", "shadow-sm");
+                signupTab.classList.add("bg-white/60", "text-slate-700", "border", "border-slate-200");
+                loginBtn.textContent = "Continue";
+            } else {
+                signupTab.classList.add("bg-emerald-500", "text-emerald-950", "font-semibold", "shadow-sm");
+                signupTab.classList.remove("bg-white/60", "text-slate-700", "border", "border-slate-200");
+                loginTab.classList.remove("bg-emerald-500", "text-emerald-950", "font-semibold", "shadow-sm");
+                loginTab.classList.add("bg-white/60", "text-slate-700", "border", "border-slate-200");
+                loginBtn.textContent = "Create account";
+            }
+        }
+
+        // Initialise login state
+        currentUser = loadUserFromStorage();
+        if (currentUser) {
+            showAppShell();
+        } else {
+            setAuthMode("login");
+        }
+
+        loginTab.addEventListener("click", () => setAuthMode("login"));
+        signupTab.addEventListener("click", () => setAuthMode("signup"));
+
+        loginBtn.addEventListener("click", () => {
+            const name = clinicianNameEl.value.trim();
+            const email = clinicianEmailEl.value.trim();
+            const password = clinicianPasswordEl.value.trim();
+
+            if (!name) {
+                alert("Please enter your name.");
+                clinicianNameEl.focus();
+                return;
+            }
+            if (!email) {
+                alert("Please enter your email.");
+                clinicianEmailEl.focus();
+                return;
+            }
+            if (!password) {
+                alert("Please enter a password.");
+                clinicianPasswordEl.focus();
+                return;
+            }
+
+            currentUser = { name, email, mode: authMode };
+            sessionStorage.setItem("hcg_user", JSON.stringify(currentUser));
+            showAppShell();
+        });
+
+        logoutBtn.addEventListener("click", () => {
+            sessionStorage.removeItem("hcg_user");
+            currentUser = null;
+            appShell.classList.add("hidden");
+            loginScreen.classList.remove("hidden");
+            setAuthMode("login");
+        });
+
+        async function generate() {
+            const topicText = topicEl.value.trim();
+
+            if (!currentUser) {
+                alert("Please log in or sign up first.");
+                return;
+            }
+
+            generateBtn.disabled = true;
+            generateLabel.textContent = "Generating…";
+            generateSpinner.classList.remove("hidden");
+            outputBox.textContent = "Contacting the model and generating content…";
+
+            try {
+                const temperature = Number(temperatureInput.value);
+                const maxTokens = Number(document.getElementById("maxTokens").value) || 2048;
+
+                // Collect structured case details
+                const visitDate = visitDateEl.value;
+                const patientNameCase = patientNameCaseEl.value.trim();
+                const patientAge = patientAgeEl.value.trim();
+                const providerName = providerNameEl.value.trim();
+                const bp = vitalsBpEl.value.trim();
+                const hr = vitalsHrEl.value.trim();
+                const temp = vitalsTempEl.value.trim();
+
+                if (!patientNameCase || !patientAge || !topicText) {
+                    alert("Please enter patient name, age, and disease description.");
+                    return;
+                }
+
+                const contextParts = [];
+                contextParts.push(`Patient: ${patientNameCase}, ${patientAge} years`);
+                if (visitDate) contextParts.push(`Visit date: ${visitDate}`);
+                if (providerName) contextParts.push(`Provider: ${providerName}`);
+                if (bp) contextParts.push(`BP: ${bp}`);
+                if (hr) contextParts.push(`HR: ${hr}`);
+                if (temp) contextParts.push(`Temp: ${temp}`);
+
+                const headerLine = contextParts.join(" | ");
+                const caseBlock = headerLine
+                    ? `${headerLine}\n\n${topicText}`
+                    : topicText;
+
+                const instructionBlock =
+                    "Please write ONLY the following sections in order, using clear headings:\n" +
+                    "1. Summary\n" +
+                    "2. Treatment\n" +
+                    "3. Precautions\n" +
+                    "Do not include any other sections.";
+
+                const enrichedTopic = `${instructionBlock}\n\n${caseBlock}`;
+
+                const res = await fetch("http://localhost:8000/generate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        topic: enrichedTopic,
+                        content_type: selectedType,
+                        temperature,
+                        max_tokens: maxTokens,
+                        top_k_context: 5
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    const msg = err.detail || `HTTP ${res.status}`;
+                    outputBox.textContent = "Generation failed: " + msg;
+                    copyBtn.classList.add("hidden");
+                    downloadBtn.classList.add("hidden");
+                    return;
+                }
+
+                const data = await res.json();
+
+                // Store result in sessionStorage and redirect to result page.
+                // If opened via FastAPI (http://localhost:8000), go to /result.
+                // If opened directly as a file, go to local result.html.
+                const payload = {
+                    content: data.content || "",
+                    content_type: data.content_type || selectedType,
+                    topic: data.topic || enrichedTopic,
+                    generated_at: new Date().toISOString(),
+                    patient: {
+                        name: patientNameCase,
+                        age: patientAge,
+                        visit_date: visitDate,
+                        provider: providerName,
+                        bp,
+                        hr,
+                        temp
+                    }
+                };
+                sessionStorage.setItem("hcg_result", JSON.stringify(payload));
+                if (window.location.protocol === "file:") {
+                    window.location.href = "result.html";
+                } else {
+                    window.location.href = "/result";
+                }
+            } catch (e) {
+                const msg = e.message || e.toString();
+                if (msg.toLowerCase().includes("failed to fetch") || msg.toLowerCase().includes("network")) {
+                    outputBox.textContent = "Could not reach the server. Open this app from the API URL (e.g. http://localhost:8000/) and ensure the backend is running: uvicorn api.main:app --reload --host 0.0.0.0 --port 8000";
+                } else {
+                    outputBox.textContent = "Generation failed: " + msg;
+                }
+                copyBtn.classList.add("hidden");
+                downloadBtn.classList.add("hidden");
+            } finally {
+                generateBtn.disabled = false;
+                generateLabel.textContent = "Generate document";
+                generateSpinner.classList.add("hidden");
+            }
+        }
+
+        generateBtn.addEventListener("click", generate);
+
+        topicEl.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                generate();
+            }
+        });
+
+        copyBtn.addEventListener("click", async () => {
+            const text = outputBox.textContent || "";
+            if (!text.trim()) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                copyBtn.textContent = "Copied!";
+                setTimeout(() => (copyBtn.textContent = "Copy text"), 1200);
+            } catch {
+                alert("Copy failed. Please copy manually.");
+            }
+        });
+
+        downloadBtn.addEventListener("click", () => {
+            const text = outputBox.textContent || "";
+            if (!text.trim()) return;
+            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "healthcare_content.txt";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+
+</html>

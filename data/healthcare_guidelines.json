@@ -1,0 +1,65 @@
+{
+  "terminology": [
+    {
+      "term": "vital signs",
+      "definition": "Clinical measurements that indicate the state of a patient's essential body functions: temperature, pulse, blood pressure, respiratory rate, and oxygen saturation (SpO2)."
+    },
+    {
+      "term": "chief complaint",
+      "definition": "The primary reason for the patient's visit or admission, stated in the patient's own words when possible (e.g., 'CC: chest pain for 2 hours')."
+    },
+    {
+      "term": "history of present illness",
+      "definition": "HPI: A chronological description of the development of the patient's present illness from the first sign or symptom to the present. Include location, quality, severity, duration, timing, context, modifying factors, and associated signs/symptoms (OPQRST)."
+    },
+    {
+      "term": "past medical history",
+      "definition": "PMH: Chronic conditions, surgeries, hospitalizations. Use standard abbreviations: HTN (hypertension), DM (diabetes mellitus), CAD (coronary artery disease), COPD (chronic obstructive pulmonary disease), CKD (chronic kidney disease)."
+    },
+    {
+      "term": "medications",
+      "definition": "List current medications with dose, route, and frequency. Include PRN medications. Use generic names when documenting; brand names in parentheses if clinically relevant."
+    },
+    {
+      "term": "allergies",
+      "definition": "Document drug allergies and adverse reactions with type of reaction (e.g., anaphylaxis, rash). Use 'NKDA' when no known drug allergies."
+    },
+    {
+      "term": "assessment and plan",
+      "definition": "A&P: For each problem, state the assessment (diagnosis or differential) and the plan (diagnostics, treatment, follow-up). Use numbered format for multiple problems."
+    },
+    {
+      "term": "discharge summary",
+      "definition": "Summarize admission reason, key findings, procedures, discharge diagnosis, medications at discharge, follow-up instructions, and patient education provided."
+    },
+    {
+      "term": "SOAP note",
+      "definition": "Subjective (patient's report), Objective (vitals, labs, exam), Assessment (clinical impression), Plan (treatment and follow-up). Standard format for progress notes."
+    },
+    {
+      "term": "informed consent",
+      "definition": "Document that the patient (or surrogate) was informed of the procedure, risks, benefits, alternatives, and gave voluntary consent. Use clear, non-technical language in patient-facing documentation."
+    }
+  ],
+  "formatting_rules": [
+    "Use headings: Chief Complaint, HPI, PMH, Medications, Allergies, Vital Signs, Physical Exam, Labs/Studies, Assessment and Plan.",
+    "Abbreviations: Use standard medical abbreviations (e.g., BP, HR, RR, temp, SpO2, WNL). Define non-standard abbreviations on first use.",
+    "Numbers: Spell out numbers one through nine in narrative text; use numerals for 10 and above, ages, dosages, and vital signs.",
+    "Tone: Professional, objective, and concise. Avoid colloquial language. Use third person or passive voice where appropriate in clinical notes.",
+    "Dates: Use ISO format (YYYY-MM-DD) or institutional standard. Document time for time-sensitive entries (e.g., medication administration)."
+  ],
+  "patient_summary_template": {
+    "sections": [
+      "Patient Demographics & Encounter Info",
+      "Chief Complaint",
+      "Brief History of Present Illness",
+      "Relevant Past Medical History",
+      "Current Medications",
+      "Allergies",
+      "Vital Signs",
+      "Key Findings (Labs, Imaging, Exam)",
+      "Assessment/Diagnosis",
+      "Plan (Treatment & Follow-up)"
+    ]
+  }
+}
